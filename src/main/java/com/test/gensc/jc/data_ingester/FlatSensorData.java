@@ -2,10 +2,12 @@ package com.test.gensc.jc.data_ingester;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FlatSensorData {
+import java.io.Serializable;
+
+public class FlatSensorData implements Serializable {
 
     @JsonProperty("id")
-    private int id;
+    private long id;
     @JsonProperty("type")
     private String type;
     @JsonProperty("temperature_f")
@@ -23,7 +25,7 @@ public class FlatSensorData {
         this.temperature_c = tempc;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -54,6 +56,10 @@ public class FlatSensorData {
 
     public void setTemperature_c(double temperature_c) {
         this.temperature_c = temperature_c;
+    }
+
+    public String createKafkaRecordField(){
+        return id + "," + type + "," + temperature_f + "," + temperature_c;
     }
 
     @Override
