@@ -21,6 +21,8 @@ public class App
         SensorDataProcessor sensorDataProcessor = new SensorDataProcessor();
         sensorDataProcessor.processSensorData();
 
+
+
         System.out.println( "Finished App run!" );
 
     }
