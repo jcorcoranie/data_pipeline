@@ -1,5 +1,6 @@
 package com.gensc.jc.pipeline_ingester;
 
+import com.gensc.jc.utils.Utils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.log4j.Level;
@@ -19,10 +20,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TemperatureSensorDataDStreamProcess {
 
@@ -31,10 +29,70 @@ public class TemperatureSensorDataDStreamProcess {
 
         Logger.getLogger("org.apache").setLevel(Level.WARN);
         Logger.getLogger("org.apache.spark.storage").setLevel(Level.ERROR);
+        Properties properties = new Utils().invoke();
+        TemperatureSensorDataDStreamProcess tsdsp = new TemperatureSensorDataDStreamProcess();
 
-        SparkConf conf = new SparkConf().setAppName("viewingfigures").setMaster("local[*]");
-        JavaStreamingContext sc = new JavaStreamingContext(conf, Durations.seconds(1));
 
+        JavaStreamingContext sc = tsdsp.getJavaStreamingContext();
+
+        JavaInputDStream<ConsumerRecord<String, String>> consumerRecordInputDStream = tsdsp.getConsumerRecordInputDStream(sc);
+
+        JavaDStream<String> sensorDataDStream = consumerRecordInputDStream.map(record -> record.value());
+
+        JavaDStream<Tuple5<String, String, String, String, String>> sensorDataStringTuple = sensorDataDStream.map(data -> new Tuple5<>(data.split(",")[0].replace("[", ""), data.split(",")[1], data.split(",")[2], data.split(",")[3], data.split(",")[4].replace("]", "")));
+
+        tsdsp.sensorDataLoadToDb(properties, sensorDataStringTuple);
+
+
+        sc.start();
+        sc.awaitTermination();
+    }
+
+
+    public void sensorDataLoadToDb(Properties properties, JavaDStream<Tuple5<String, String, String, String, String>> sensorDataStringTuple) {
+
+        sensorDataStringTuple.foreachRDD(rdd -> {
+
+            if(!rdd.isEmpty()){
+                rdd.foreachPartition(partitionOfRecords -> {
+
+                    Connection myConn = DriverManager.getConnection(properties.getProperty("db_conn"), properties.getProperty("db_user"), properties.getProperty("db_pass"));
+                    Statement myStmt = myConn.createStatement();
+
+
+                    while (partitionOfRecords.hasNext()) {
+                        String insertStr = getUpdateString(partitionOfRecords);
+                        myStmt.executeUpdate(insertStr);
+                    }
+                    myConn.close();
+                });
+            }
+        });
+    }
+
+
+    public String getUpdateString(Iterator<Tuple5<String, String, String, String, String>> partitionOfRecords) {
+        Tuple5<String,String,String,String,String> tuple = partitionOfRecords.next();
+
+        DecimalFormat decimalFormat = new DecimalFormat("###.##");
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+
+        return "insert into temperatures_data (id, type, temperaturef, temperaturec, timeOfMeasurement) " +
+                                "values(" + tuple._1() + ", '" +
+                                            tuple._2() + "', " +
+                                            decimalFormat.format(Double.valueOf(tuple._3())) + ", " +
+                                            decimalFormat.format(Double.valueOf(tuple._4())) + ", '" +
+                                            tuple._5() + "')";
+    }
+
+
+    public JavaStreamingContext getJavaStreamingContext() {
+        SparkConf conf = new SparkConf().setAppName("SensorDbLoad").setMaster("local[*]");
+        return new JavaStreamingContext(conf, Durations.seconds(1));
+    }
+
+
+    public JavaInputDStream<ConsumerRecord<String, String>> getConsumerRecordInputDStream(JavaStreamingContext sc) {
         Collection topics = Arrays.asList("temperaturerecords");
 
         Map<String, Object> params = new HashMap<>();
@@ -44,44 +102,7 @@ public class TemperatureSensorDataDStreamProcess {
         params.put("group.id", "spark-group");
         params.put("auto.offset.reset", "latest");
 
-
-        JavaInputDStream<ConsumerRecord<String, String>> stream = KafkaUtils.createDirectStream(sc, LocationStrategies.PreferConsistent(),
+        return KafkaUtils.createDirectStream(sc, LocationStrategies.PreferConsistent(),
                 ConsumerStrategies.Subscribe(topics, params));
-
-        JavaDStream<String> results = stream.map(item -> item.value());
-
-        JavaDStream<Tuple5<String, String, String, String, String>> dStream = results.map(data -> new Tuple5<>(data.split(",")[0].replace("[", ""), data.split(",")[1], data.split(",")[2], data.split(",")[3], data.split(",")[4].replace("]", "")));
-
-        dStream.foreachRDD(rdd -> {
-
-            if(!rdd.isEmpty()){
-                rdd.foreachPartition(partitionOfRecords -> {
-
-                    Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sensor_data?useSSL=false", "student", "student");
-                    Statement myStmt = myConn.createStatement();
-                    int numberOfRows = 0;
-                    DecimalFormat df = new DecimalFormat("###.##");
-                    df.setRoundingMode(RoundingMode.CEILING);
-
-                    while (partitionOfRecords.hasNext()) {
-                        
-                        Tuple5<String,String,String,String,String> tuple = partitionOfRecords.next();
-
-                        String insertStr = "insert into temperatures_data (id, type, temperaturef, temperaturec, timeOfMeasurement) " +
-                                                "values(" + tuple._1() + ", '" +
-                                                            tuple._2() + "', " +
-                                                            df.format(Double.valueOf(tuple._3())) + ", " +
-                                                            df.format(Double.valueOf(tuple._4())) + ", '" +
-                                                            tuple._5() + "')";
-                        System.out.println(insertStr);
-                        numberOfRows = myStmt.executeUpdate(insertStr);
-
-                    }
-                    myConn.close();
-                });
-            }
-        });
-        sc.start();
-        sc.awaitTermination();
     }
 }

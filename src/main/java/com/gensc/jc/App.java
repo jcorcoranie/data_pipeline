@@ -1,7 +1,6 @@
 package com.gensc.jc;
 
 import com.gensc.jc.data_creation.CreateTestData;
-import com.gensc.jc.data_ingester.SensorDataProcessor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -19,8 +18,8 @@ public class App
         CreateTestData createTestData = new CreateTestData();
         createTestData.createTestData();
 
-        SensorDataProcessor sensorDataProcessor = new SensorDataProcessor();
-        sensorDataProcessor.processSensorData();
+        //SensorDataProcessor sensorDataProcessor = new SensorDataProcessor();
+        //sensorDataProcessor.processSensorData();
 
 
 

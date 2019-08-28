@@ -10,10 +10,8 @@ public class Content {
     @JsonProperty("time_of_measurement")
     private String time_of_measurement;
 
-
     public Content() {
     }
-
 
     public Content(double temperature_f) {
         this.temperature_f = temperature_f;
