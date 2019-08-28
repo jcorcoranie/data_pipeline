@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CreateTestData {
@@ -14,6 +15,8 @@ public class CreateTestData {
     private int id;
     private String type;
     private SensorData sensorRecord;
+    private double temperature;
+    private Date dateTime;
     private List<SensorData> sensorData;
 
     private static final int FILE_LIMIT = 10;
@@ -35,11 +38,13 @@ public class CreateTestData {
 
             for (int i = 0; i < DATA_LIMIT; i++) {
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                System.out.println(sdf.format(timestamp));
+                String dt = sdf.format(timestamp);
 
                 randomId = (int) (Math.random() * ((1000 - 1) + 1)) + 1;  // assume there are 1000 sensors.
                 randomTempF = (Math.random() * ((150 - 1) + 1)) + 1;        // assume temperature range 150 degrees F.
 
-                sensorRecord = new SensorData(randomId, "Sensor", randomTempF);
+                sensorRecord = new SensorData(randomId, "Sensor", randomTempF, dt);
                 sensorData.add(sensorRecord);
 
             }

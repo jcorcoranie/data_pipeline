@@ -2,8 +2,6 @@ package com.test.gensc.jc.data_creation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.sql.Timestamp;
-
 public class SensorData {
 
     @JsonProperty("id")
@@ -22,7 +20,7 @@ public class SensorData {
         this.content = new Content(temp);
     }
 
-    public SensorData(long id, String type, double temp, Timestamp time_of_measurement) {
+    public SensorData(long id, String type, double temp, String time_of_measurement) {
         this.id = id;
         this.type = type;
         this.content = new Content(temp, time_of_measurement);

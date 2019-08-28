@@ -12,7 +12,7 @@ import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kafka010.ConsumerStrategies;
 import org.apache.spark.streaming.kafka010.KafkaUtils;
 import org.apache.spark.streaming.kafka010.LocationStrategies;
-import scala.Tuple4;
+import scala.Tuple5;
 
 import java.math.RoundingMode;
 import java.sql.Connection;
@@ -50,7 +50,7 @@ public class TemperatureSensorDataDStreamProcess {
 
         JavaDStream<String> results = stream.map(item -> item.value());
 
-        JavaDStream<Tuple4<String, String, String, String>> dStream = results.map(data -> new Tuple4<>(data.split(",")[0].replace("[", ""), data.split(",")[1], data.split(",")[2], data.split(",")[3].replace("]", "")));
+        JavaDStream<Tuple5<String, String, String, String, String>> dStream = results.map(data -> new Tuple5<>(data.split(",")[0].replace("[", ""), data.split(",")[1], data.split(",")[2], data.split(",")[3], data.split(",")[4].replace("]", "")));
 
         dStream.foreachRDD(rdd -> {
 
@@ -65,13 +65,14 @@ public class TemperatureSensorDataDStreamProcess {
 
                     while (partitionOfRecords.hasNext()) {
                         
-                        Tuple4<String,String,String,String> tuple = partitionOfRecords.next();
+                        Tuple5<String,String,String,String,String> tuple = partitionOfRecords.next();
 
-                        String insertStr = "insert into temperatures_data (id, type, temperaturef, temperaturec) " +
+                        String insertStr = "insert into temperatures_data (id, type, temperaturef, temperaturec, timeOfMeasurement) " +
                                                 "values(" + tuple._1() + ", '" +
                                                             tuple._2() + "', " +
                                                             df.format(Double.valueOf(tuple._3())) + ", " +
-                                                            df.format(Double.valueOf(tuple._4())) + ")";
+                                                            df.format(Double.valueOf(tuple._4())) + ", '" +
+                                                            tuple._5() + "')";
                         System.out.println(insertStr);
                         numberOfRows = myStmt.executeUpdate(insertStr);
 
