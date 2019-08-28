@@ -52,7 +52,7 @@ public class SensorDataProcessor implements Serializable {
 
                 Row row = t.next();
                 System.out.println(row.toString());
-                producer.send(new ProducerRecord<>("viewrecords", row.toString()));
+                producer.send(new ProducerRecord<>("temperaturerecords", row.toString()));
             }
             producer.close();
         });

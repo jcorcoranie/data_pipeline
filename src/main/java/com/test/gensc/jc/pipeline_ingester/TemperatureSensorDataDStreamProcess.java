@@ -35,7 +35,7 @@ public class TemperatureSensorDataDStreamProcess {
         SparkConf conf = new SparkConf().setAppName("viewingfigures").setMaster("local[*]");
         JavaStreamingContext sc = new JavaStreamingContext(conf, Durations.seconds(1));
 
-        Collection topics = Arrays.asList("viewrecords");
+        Collection topics = Arrays.asList("temperaturerecords");
 
         Map<String, Object> params = new HashMap<>();
         params.put("bootstrap.servers", "localhost:9092");
