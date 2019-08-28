@@ -1,27 +1,28 @@
-package com.test.gensc.jc.databases;
+package com.gensc.jc.databases;
 
 import java.sql.*;
 
-public class JdbcCrud {
+public class JdbcTest {
 
-    public int insertTemperatureSensorData(int id, String dataType, Double Tempf, Double Tempc) throws SQLException {
+    public static void main(String[] args) throws SQLException {
 
         Connection myConn = null;
         Statement myStmt = null;
         ResultSet myRs = null;
-        int numberOfRows = 0;
 
         try {
 
             myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sensor_data?useSSL=false", "student", "student");
+
+            System.out.println("Cool it works!");
+
             myStmt = myConn.createStatement();
 
-            String insertStr = "insert into temperatures_data (id, type, temperaturef, temperaturec) values(" + id + ", '" + dataType + "', " + Tempf + ", " + Tempc + ")";
-            System.out.println("insertStr = " + insertStr);
+            myRs = myStmt.executeQuery("select * from temperatures_data");
 
-            numberOfRows = myStmt.executeUpdate(insertStr);
-
-
+            while (myRs.next()){
+                System.out.println(myRs.getString("id") + ", " +  myRs.getString("type"));
+            }
 
         } catch (SQLException ex) {
             // handle any errors
@@ -31,8 +32,6 @@ public class JdbcCrud {
         } finally {
             myConn.close();
         }
-
-        return numberOfRows;
 
     }
 }

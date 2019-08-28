@@ -1,4 +1,4 @@
-package com.test.gensc.jc.pipeline_ingester;
+package com.gensc.jc.pipeline_ingester;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;

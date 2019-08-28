@@ -1,4 +1,4 @@
-package com.test.gensc.jc;
+package com.gensc.jc;
 
 import static org.junit.Assert.assertTrue;
 

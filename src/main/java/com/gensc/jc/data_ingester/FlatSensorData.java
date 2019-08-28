@@ -1,4 +1,4 @@
-package com.test.gensc.jc.data_ingester;
+package com.gensc.jc.data_ingester;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

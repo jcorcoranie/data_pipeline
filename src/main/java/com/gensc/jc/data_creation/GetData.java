@@ -1,4 +1,4 @@
-package com.test.gensc.jc.data_creation;
+package com.gensc.jc.data_creation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

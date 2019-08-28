@@ -1,7 +1,7 @@
-package com.test.gensc.jc;
+package com.gensc.jc;
 
-import com.test.gensc.jc.data_creation.CreateTestData;
-import com.test.gensc.jc.data_ingester.SensorDataProcessor;
+import com.gensc.jc.data_creation.CreateTestData;
+import com.gensc.jc.data_ingester.SensorDataProcessor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
