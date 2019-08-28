@@ -69,8 +69,8 @@ public class TemperatureSensorDataDStreamProcess {
 
                         String insertStr = "insert into temperatures_data (id, type, temperaturef, temperaturec) " +
                                                 "values(" + tuple._1() + ", '" +
-                                                            tuple._3() + "', " +
-                                                            df.format(Double.valueOf(tuple._2())) + ", " +
+                                                            tuple._2() + "', " +
+                                                            df.format(Double.valueOf(tuple._3())) + ", " +
                                                             df.format(Double.valueOf(tuple._4())) + ")";
                         System.out.println(insertStr);
                         numberOfRows = myStmt.executeUpdate(insertStr);
