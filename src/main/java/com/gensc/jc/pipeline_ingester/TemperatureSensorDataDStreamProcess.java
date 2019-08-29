@@ -15,12 +15,14 @@ import java.util.*;
 
 public class TemperatureSensorDataDStreamProcess implements Serializable {
 
+    private static final Properties properties = new Utils().invoke();
+    private static final String devMode = properties.getProperty("dev.mode");
+
     //throws InterruptedException
     public static void main(String[] args)  {
 
         Logger.getLogger("org.apache").setLevel(Level.WARN);
         Logger.getLogger("org.apache.spark.storage").setLevel(Level.ERROR);
-        Properties properties = new Utils().invoke();
         DatabaseUtils databaseUtils = new DatabaseUtils();
 
 
@@ -29,7 +31,8 @@ public class TemperatureSensorDataDStreamProcess implements Serializable {
         JavaInputDStream<ConsumerRecord<String, String>> consumerRecordInputDStream = databaseUtils.getConsumerRecordInputDStream(sc);
 
         JavaDStream<String> sensorDataDStream = consumerRecordInputDStream.map(record -> record.value());
-        sensorDataDStream.print();
+
+        if(devMode.equals("true")) sensorDataDStream.print();
 
         JavaDStream<Tuple5<String, String, String, String, String>> sensorDataStringTuple = sensorDataDStream.map(data -> new Tuple5<>(data.split(",")[0].replace("[", ""), data.split(",")[1], data.split(",")[2], data.split(",")[3], data.split(",")[4].replace("]", "")));
 
