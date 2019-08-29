@@ -1,6 +1,9 @@
 package com.gensc.jc.data_creation;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gensc.jc.domain.SensorData;
 import com.gensc.jc.utils.Utils;
 
 import java.io.File;
@@ -55,7 +58,17 @@ public class CreateTestData {
 
                 mapper.writeValue(new File(properties.getProperty("json.FileDir") + fileName), sensorData);
 
+            } catch (NullPointerException e) {
+                System.err.println("A NullPointerException has been caught. The file name and or path may be empty!");
+                e.printStackTrace();
+            } catch (JsonMappingException e) {
+                System.err.println("A JsonMappingException has been caught. Failed to convert the Sensor data to JSON format!");
+                e.printStackTrace();
+            } catch (JsonGenerationException e) {
+                System.err.println("A JsonGenerationException has been caught. Failed to generate the JSON file of sensor data!");
+                e.printStackTrace();
             } catch (IOException e) {
+                System.err.println("A IOException has been caught. Failed to write the Sensor data JSON file to testData directory!");
                 e.printStackTrace();
             }
         }

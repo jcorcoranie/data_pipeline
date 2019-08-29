@@ -1,6 +1,6 @@
 package com.gensc.jc.data_ingester;
 
-import com.gensc.jc.data_creation.SensorData;
+import com.gensc.jc.domain.SensorData;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;

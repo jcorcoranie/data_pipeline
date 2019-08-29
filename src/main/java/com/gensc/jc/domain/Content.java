@@ -1,4 +1,4 @@
-package com.gensc.jc.data_creation;
+package com.gensc.jc.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

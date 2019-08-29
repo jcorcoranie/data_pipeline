@@ -1,7 +1,7 @@
 package com.test;
 
 import com.gensc.jc.data_creation.CreateTestData;
-import com.gensc.jc.data_creation.SensorData;
+import com.gensc.jc.domain.SensorData;
 import com.gensc.jc.utils.Utils;
 import org.junit.Test;
 
