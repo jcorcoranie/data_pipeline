@@ -1,6 +1,7 @@
 package com.gensc.jc.pipeline_ingester;
 
 import com.gensc.jc.utils.DatabaseUtils;
+import com.gensc.jc.utils.StreamingUtils;
 import com.gensc.jc.utils.Utils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.log4j.Level;
@@ -24,11 +25,12 @@ public class TemperatureSensorDataDStreamProcess implements Serializable {
         Logger.getLogger("org.apache").setLevel(Level.WARN);
         Logger.getLogger("org.apache.spark.storage").setLevel(Level.ERROR);
         DatabaseUtils databaseUtils = new DatabaseUtils();
+        StreamingUtils streamingUtils = new StreamingUtils();
 
 
-        JavaStreamingContext sc = databaseUtils.getJavaStreamingContext();
+        JavaStreamingContext sc = streamingUtils.getJavaStreamingContext();
 
-        JavaInputDStream<ConsumerRecord<String, String>> consumerRecordInputDStream = databaseUtils.getConsumerRecordInputDStream(sc);
+        JavaInputDStream<ConsumerRecord<String, String>> consumerRecordInputDStream = streamingUtils.getConsumerRecordInputDStream(sc);
 
         JavaDStream<String> sensorDataDStream = consumerRecordInputDStream.map(record -> record.value());
 
