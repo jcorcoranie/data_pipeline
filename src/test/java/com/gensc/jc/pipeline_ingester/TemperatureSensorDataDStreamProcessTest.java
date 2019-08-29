@@ -1,4 +1,4 @@
-package com.test;
+package com.gensc.jc.pipeline_ingester;
 
 import org.junit.Test;
 

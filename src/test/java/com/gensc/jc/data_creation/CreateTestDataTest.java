@@ -1,4 +1,4 @@
-package com.test;
+package com.gensc.jc.data_creation;
 
 import com.gensc.jc.data_creation.CreateTestData;
 import com.gensc.jc.domain.SensorData;
