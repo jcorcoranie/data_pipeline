@@ -1,5 +1,6 @@
 package com.gensc.jc.data_ingester;
 
+import com.gensc.jc.data_creation.CreateTestData;
 import com.gensc.jc.domain.SensorData;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -13,6 +14,12 @@ import java.io.Serializable;
 import java.util.Properties;
 
 public class SensorDataProcessor implements Serializable {
+
+
+    public static void main(String[] args){
+        SensorDataProcessor sensorDataProcessor = new SensorDataProcessor();
+        sensorDataProcessor.processSensorData();
+    }
 
     public void processSensorData(){
 

@@ -12,6 +12,7 @@ import org.apache.spark.streaming.kafka010.KafkaUtils;
 import org.apache.spark.streaming.kafka010.LocationStrategies;
 import scala.Tuple5;
 
+import java.io.Serializable;
 import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +21,7 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public class DatabaseUtils {
+public class DatabaseUtils implements Serializable {
 
     public void sensorDataLoadToDb(Properties properties, JavaDStream<Tuple5<String, String, String, String, String>> sensorDataStringTuple){
 

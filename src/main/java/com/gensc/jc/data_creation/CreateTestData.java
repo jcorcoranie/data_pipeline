@@ -17,15 +17,18 @@ import java.util.Properties;
 
 public class CreateTestData {
 
-    private SensorData sensorRecord;
-    private List<SensorData> sensorData;
-
     private static SimpleDateFormat sdf = null;
-    ObjectMapper mapper = new ObjectMapper();
 
-
+    public static void main(String[] args){
+        CreateTestData createTestData = new CreateTestData();
+        createTestData.createTestData();
+    }
 
     public List<String> createTestData() {
+
+        SensorData sensorRecord;
+        List<SensorData> sensorData;
+        ObjectMapper mapper = new ObjectMapper();
 
         Properties properties = new Utils().invoke();
         sdf = new SimpleDateFormat(properties.getProperty("isoDateTimeFormat"));
