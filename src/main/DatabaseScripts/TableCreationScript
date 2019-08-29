@@ -1,0 +1,9 @@
+CREATE TABLE `temperatures_data` (
+  `pid` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
+  `type` varchar(45) NOT NULL,
+  `temperaturef` decimal(6,2) NOT NULL,
+  `temperaturec` decimal(6,2) NOT NULL,
+  `timeOfMeasurement` datetime NOT NULL,
+  PRIMARY KEY (`pid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
